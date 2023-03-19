@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 align="center" style="color: white">Bilanz</h1>
+</br>
+<div align="center" >
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#buchungssatzForm">
+        Bilanz
+    </button>
+</div>
+</br>
+<table class="table table-dark table-striped table-hover table-bordered table-sm" name="bestandskonten">
+    <thead>
+        <tr align="center">
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Anfangsbestand</th>
+            <th scope="col">Abschlussbestand</th>
+            <th scope="col">Kontotyp</th>
+            <th scope="col">Kontoart</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for bilanz in user.bilanzen %}
+        <tr align="center">
+            <td>{{ bilanz.id }}</td>
+            <td><a href="/bestandskonten/#{{bilanz.name}}">{{ bilanz.name }}</a></td>
+            <td>{{ bilanz.anfangsbestand }}</td>
+            <td>{{ bilanz.abschlussbestand }}</td>
+            <td>{{ bilanz.kontotyp }}</td>
+            <td>{{ bilanz.kontoart }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="modal fade" id="buchungssatzForm" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Bilanz</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form method="POST">
+                    <div class="form-group">
+                        <label for="bilanz_name">Name</label>
+                        <input type="text" class="form-control" id="bilanz_name" name="bilanz_name" placeholder="Name">
+                    </div>
+                    <div class="form-group">
+                        <label for="bilanz_anfangsbestand">Anfangsbestand</label>
+                        <input type="number" class="form-control" id="bilanz_anfangsbestand" name="bilanz_anfangsbestand" placeholder="Anfangsbestand">
+                    </div>
+                    <label for="bilanz_kontotyp">Kontotyp</label>
+                    <select class="form-select form-control" name="bilanz_kontotyp" id="bilanz_kontotyp">
+                        
+                        <option value="Bank">
+                            Bank
+                        </option>
+                        
+                    </select>
+                    </br>
+                    <label for="bilanz_kontoart">Kontoart</label>
+                    <select class="form-select form-control" name="bilanz_kontoart" id="bilanz_kontoart">
+                        <option value="aktiv">
+                            Aktiv
+                        </option>
+                        <option value="passiv">
+                            Passiv
+                        </option>
+                        <option value="aufwand">
+                            Aufwand
+                        </option>
+                        <option value="ertrag">
+                            Ertrag
+                        </option>
+                    </select>
+                    </br>
+                    <div align="center">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

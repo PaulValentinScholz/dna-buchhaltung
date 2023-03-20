@@ -20,7 +20,7 @@ def home():
             if bilanz_name.__contains__(""",.:;*+~#'?^°!"$%&/()=§\][{´`""") or len(bilanz_name) == 0:
                     flash('Bitte keine Satzzeichen in Name eingeben oder leer lassen.', category='error')
             else:
-                if bilanz.kontoart == 'ertrag' or bilanz.kontoart == 'aufwand':
+                if bilanz_kontoart == 'ertrag' or bilanz_kontoart == 'aufwand':
                     bilanz_anfangsbestand = 0
                 new_bilanz = Bilanz(name=bilanz_name, anfangsbestand=bilanz_anfangsbestand, kontoart=bilanz_kontoart, user_id=current_user.id)
                 db.session.add(new_bilanz)

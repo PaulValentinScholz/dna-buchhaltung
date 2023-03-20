@@ -12,15 +12,17 @@ def home():
         bilanz = request.form
         bilanz_name = request.form.get('bilanz_name')
         bilanz_anfangsbestand = request.form.get('bilanz_anfangsbestand')
-        bilanz_kontotyp = request.form.get('bilanz_kontotyp')
+        bilanz_kontoart = request.form.get('bilanz_kontoart')
 
         if len(bilanz) != 3:
             flash('Bitte fülle alle Felder aus.', category='error')
         else:
             if bilanz_name.__contains__(""",.:;*+~#'?^°!"$%&/()=§\][{´`""") or len(bilanz_name) == 0:
                     flash('Bitte keine Satzzeichen in Name eingeben oder leer lassen.', category='error')
-            else:   
-                new_bilanz = Bilanz(name=bilanz_name, anfangsbestand=bilanz_anfangsbestand, kontotyp=bilanz_kontotyp, user_id=current_user.id)
+            else:
+                if bilanz.kontoart == 'ertrag' or bilanz.kontoart == 'aufwand':
+                    bilanz_anfangsbestand = 0
+                new_bilanz = Bilanz(name=bilanz_name, anfangsbestand=bilanz_anfangsbestand, kontoart=bilanz_kontoart, user_id=current_user.id)
                 db.session.add(new_bilanz)
                 db.session.commit()
                 

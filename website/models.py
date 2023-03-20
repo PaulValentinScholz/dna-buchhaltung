@@ -7,7 +7,7 @@ class Bilanz(db.Model):
     anfangsbestand = db.Column(db.Float)
     abschlussbestand = db.Column(db.Float)
     kontoart = db.Column(db.String(128))
-    kontotyp = db.Column(db.String(128), nullable=False)
+    kontotyp = db.Column(db.String(128))
     abgeschlossen = db.Column(db.Boolean, default=False)
     default_konto = db.Column(db.Boolean, default=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)

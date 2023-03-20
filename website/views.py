@@ -14,7 +14,7 @@ def home():
         bilanz_anfangsbestand = request.form.get('bilanz_anfangsbestand')
         bilanz_kontotyp = request.form.get('bilanz_kontotyp')
 
-        if len(bilanz) != 4:
+        if len(bilanz) != 3:
             flash('Bitte fülle alle Felder aus.', category='error')
         else:
             if bilanz_name.__contains__(""",.:;*+~#'?^°!"$%&/()=§\][{´`""") or len(bilanz_name) == 0:
@@ -38,7 +38,7 @@ def buchungssatz():
         buchungssatz_wert = request.form.get('buchungssatz_wert')
         buchungssatz_anmerkung = request.form.get('buchungssatz_anmerkung')
 
-        if len(buchungssatz) != 3:
+        if len(buchungssatz) != 4:
                 flash('Bitte fülle alle Felder aus.', category='error')
         else:
             if buchungssatz_wert.__contains__(" ") or len(buchungssatz_wert) == 0:
@@ -54,8 +54,6 @@ def buchungssatz():
                     flash('Buchungssatz wurde hinzugefügt', category='success')    
 
     return render_template('buchungssatz.html', user=current_user)
-
-
 
 @views.route('/bestandskonten/', methods=['GET', 'POST'])
 @login_required

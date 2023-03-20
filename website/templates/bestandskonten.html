@@ -13,6 +13,7 @@
 </br>
 
 {% for bilanz in user.bilanzen %}
+{% if bilanz.kontoart == 'aktiv' or bilanz.kontoart == 'passiv' %}
 {% set summe_soll = 0 %}
 {% set summe_haben = 0 %}
 <table class="table table-dark table-striped table-hover table-bordered table-sm" id="{{bilanz.name}}" name="{{bilanz.name}}">
@@ -39,7 +40,7 @@
             <td class="w-20"></td>
             <td class="w-20"></td>
             <td class="w-20"></td>
-            <td class="w-20" style="color: #A5D6A7">AnFangsbestand</td>
+            <td class="w-20" style="color: #A5D6A7">Anfangsbestand</td>
             <td class="w-20" style="color: #A5D6A7">{{ bilanz.anfangsbestand|int }}</td>
         </tr>
         {% endif %}

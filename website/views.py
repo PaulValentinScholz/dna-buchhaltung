@@ -12,7 +12,6 @@ def home():
         bilanz = request.form
         bilanz_name = request.form.get('bilanz_name')
         bilanz_anfangsbestand = request.form.get('bilanz_anfangsbestand')
-        bilanz_kontoart = request.form.get('bilanz_kontoart')
         bilanz_kontotyp = request.form.get('bilanz_kontotyp')
 
         if len(bilanz) != 4:
@@ -21,7 +20,7 @@ def home():
             if bilanz_name.__contains__(""",.:;*+~#'?^°!"$%&/()=§\][{´`""") or len(bilanz_name) == 0:
                     flash('Bitte keine Satzzeichen in Name eingeben oder leer lassen.', category='error')
             else:   
-                new_bilanz = Bilanz(name=bilanz_name, anfangsbestand=bilanz_anfangsbestand, kontoart=bilanz_kontoart, kontotyp=bilanz_kontotyp, user_id=current_user.id)
+                new_bilanz = Bilanz(name=bilanz_name, anfangsbestand=bilanz_anfangsbestand, kontotyp=bilanz_kontotyp, user_id=current_user.id)
                 db.session.add(new_bilanz)
                 db.session.commit()
                 
@@ -78,12 +77,7 @@ def bestandskonten():
             elif bilanz.kontoart == 'passiv':
                 summe_haben += bilanz.anfangsbestand
                 bilanz.abschlussbestand = summe_haben - summe_soll
-
-            print(F"{bilanz.name} soll {summe_soll}")
-            print(F"{bilanz.name} haben {summe_haben}")
-            print(F"{bilanz.name}")
             summen.append([summe_soll, summe_haben])
-            print(summen)
             db.session.commit()
         return render_template('bestandskonten.html', user=current_user, summen=summen)
     return render_template('bestandskonten.html', user=current_user)
@@ -92,8 +86,26 @@ def bestandskonten():
 @views.route('/erfolgskonten/', methods=['GET', 'POST'])
 @login_required
 def erfolgskonten():
-    if request.method == 'GET':
-        pass
+    if request.method == 'POST':
+        summen = []
+        for bilanz in current_user.bilanzen:
+            summe_soll = 0
+            summe_haben = 0
+            bilanz.abgeschlossen = True
+            for buchungssatz in current_user.buchungssaetze:
+                if bilanz.id == buchungssatz.soll_id:
+                    summe_soll += buchungssatz.wert
+                elif bilanz.id == buchungssatz.haben_id:
+                    summe_haben += buchungssatz.wert
+            if bilanz.kontoart == 'aufwand':
+                summe_soll += bilanz.anfangsbestand
+                bilanz.abschlussbestand = summe_soll - summe_haben
+            elif bilanz.kontoart == 'ertrag':
+                summe_haben += bilanz.anfangsbestand
+                bilanz.abschlussbestand = summe_haben - summe_soll
+            summen.append([summe_soll, summe_haben])
+            db.session.commit()
+        return render_template('erfolgskonten.html', user=current_user, summen=summen)
     return render_template('erfolgskonten.html', user=current_user)
 
 

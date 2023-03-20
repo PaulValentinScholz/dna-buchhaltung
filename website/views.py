@@ -18,8 +18,8 @@ def home():
         if len(bilanz) != 4:
             flash('Bitte fülle alle Felder aus.', category='error')
         else:
-            if bilanz_name.__contains__(" ") or len(bilanz_name) == 0:
-                    flash('Bitte keine Lehrzeichen in Name eingeben oder lehr lassen.', category='error')
+            if bilanz_name.__contains__(""",.:;*+~#'?^°!"$%&/()=§\][{´`""") or len(bilanz_name) == 0:
+                    flash('Bitte keine Satzzeichen in Name eingeben oder leer lassen.', category='error')
             else:   
                 new_bilanz = Bilanz(name=bilanz_name, anfangsbestand=bilanz_anfangsbestand, kontoart=bilanz_kontoart, kontotyp=bilanz_kontotyp, user_id=current_user.id)
                 db.session.add(new_bilanz)

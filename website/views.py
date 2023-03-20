@@ -38,7 +38,7 @@ def buchungssatz():
         buchungssatz_wert = request.form.get('buchungssatz_wert')
         buchungssatz_anmerkung = request.form.get('buchungssatz_anmerkung')
 
-        if len(buchungssatz) != 4:
+        if len(buchungssatz) != 3:
                 flash('Bitte fülle alle Felder aus.', category='error')
         else:
             if buchungssatz_wert.__contains__(" ") or len(buchungssatz_wert) == 0:

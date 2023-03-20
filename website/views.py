@@ -5,28 +5,13 @@ from . import db
 
 views = Blueprint('views', __name__)
 
+@views.route('/')
+def home():
+    return "<h1>Home</h1>"
+
 @views.route('/bilanzuebersicht/', methods=['GET', 'POST'])
 @login_required
 def bilanzuebersicht():
-    if request.method == 'POST':
-        bilanz = request.form
-        bilanz_name = request.form.get('bilanz_name')
-        bilanz_anfangsbestand = request.form.get('bilanz_anfangsbestand')
-        bilanz_kontoart = request.form.get('bilanz_kontoart')
-
-        if len(bilanz) != 3:
-            flash('Bitte fülle alle Felder aus.', category='error')
-        else:
-            if bilanz_name.__contains__(""",.:;*+~#'?^°!"$%&/()=§\][{´`""") or len(bilanz_name) == 0:
-                    flash('Bitte keine Satzzeichen in Name eingeben oder leer lassen.', category='error')
-            else:
-                if bilanz_kontoart == 'ertrag' or bilanz_kontoart == 'aufwand':
-                    bilanz_anfangsbestand = 0
-                new_bilanz = Bilanz(name=bilanz_name, anfangsbestand=bilanz_anfangsbestand, kontoart=bilanz_kontoart, user_id=current_user.id)
-                db.session.add(new_bilanz)
-                db.session.commit()
-                
-                flash('Bilanz wurde hinzugefügt', category='success')    
     return render_template("bilanz.html", user=current_user)
 
 

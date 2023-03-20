@@ -26,21 +26,23 @@
             <div class="navbar-nav">
               {% if user.is_authenticated %}
               <li class="nav-item">
-              <a class="nav-link" id="bilanz" href="/">Bilanz</a>
+              <a class="nav-link" id="bilanz" href="/bilanzuebersicht">Bilanzübersicht</a>
               </li>
               <li class="nav-item">
               <a class="nav-link" id="buchungssatz" href="/buchungssatz">Buchungssatz</a>
               </li>
               
               <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Konten
-                </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <li><a class="dropdown-item" href="/bestandskonten/">Bestandskonten</a></li>
-                  <li><a class="dropdown-item" href="/erfolgskonten/">Erfolgskonten</a></li>
-                  <li><a class="dropdown-item" href="/eroeffnungsbilanz/">Eröffnungsbilanz</a></li>
-                </ul>
+                    <a class="nav-link dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      Konten
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="/kontoerfassung/">Kontoerfassung</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="/bestandskonten/">Bestandskonten</a></li>
+                        <li><a class="dropdown-item" href="/erfolgskonten/">Erfolgskonten</a></li>
+                        <li><a class="dropdown-item" href="/eroeffnungsbilanz/">Eröffnungsbilanz</a></li>
+                    </ul>
               </li>
               
              

@@ -5,9 +5,11 @@ from . import db
 
 views = Blueprint('views', __name__)
 
+
 @views.route('/')
 def home():
-    return "<h1>Home</h1>"
+    return render_template("home.html", user=current_user)
+
 
 @views.route('/bilanzuebersicht/', methods=['GET', 'POST'])
 @login_required
@@ -27,18 +29,21 @@ def kontoerfassung():
         if len(bilanz) != 3:
             flash('Bitte fülle alle Felder aus.', category='error')
         else:
-            if bilanz_name.__contains__(""",.:;*+~#'?^°!"$%&/()=§\][{´`""") or len(bilanz_name) == 0:
-                flash('Bitte keine Satzzeichen in Name eingeben oder leer lassen.', category='error')
-            else:
-                if bilanz_kontoart == 'ertrag' or bilanz_kontoart == 'aufwand':
-                    bilanz_anfangsbestand = 0
-                new_bilanz = Bilanz(name=bilanz_name, anfangsbestand=bilanz_anfangsbestand, kontoart=bilanz_kontoart,
-                                    user_id=current_user.id)
-                db.session.add(new_bilanz)
-                db.session.commit()
+            for sign in """,.:;*+~#'?^°!"$"<>|%&/()=§\][{´`""":
+                if bilanz_name.__contains__(sign) or len(bilanz_name) == 0:
+                    flash('Bitte keine Satzzeichen in Name eingeben oder leer lassen.', category='error')
+                else:
+                    break
+            if bilanz_kontoart == 'ertrag' or bilanz_kontoart == 'aufwand' or bilanz_anfangsbestand == '':
+                bilanz_anfangsbestand = 0
+            new_bilanz = Bilanz(name=bilanz_name, anfangsbestand=bilanz_anfangsbestand, kontoart=bilanz_kontoart,
+                                user_id=current_user.id)
+            db.session.add(new_bilanz)
+            db.session.commit()
+            flash('Bilanz wurde hinzugefügt', category='success')
 
-                flash('Bilanz wurde hinzugefügt', category='success')
     return render_template("kontoerfassung.html", user=current_user)
+
 
 @views.route('/buchungssatz/', methods=['GET', 'POST'])
 @login_required
@@ -51,21 +56,24 @@ def buchungssatz():
         buchungssatz_anmerkung = request.form.get('buchungssatz_anmerkung')
 
         if len(buchungssatz) != 4:
-                flash('Bitte fülle alle Felder aus.', category='error')
+            flash('Bitte fülle alle Felder aus.', category='error')
         else:
             if buchungssatz_wert.__contains__(" ") or len(buchungssatz_wert) == 0:
-                    flash('Bitte keine Lehrzeichen in Wert eingeben oder lehr lassen.', category='error')
+                flash('Bitte keine Lehrzeichen in Wert eingeben oder lehr lassen.', category='error')
             else:
                 if buchungssatz_soll == buchungssatz_haben:
                     flash('Bitte wähle unterschiedliche Konten aus.', category='error')
                 else:
-                    new_buchungssatz = Buchungssatz(wert=buchungssatz_wert, anmerkung=buchungssatz_anmerkung, soll_id=buchungssatz_soll, haben_id=buchungssatz_haben, user_id=current_user.id)
+                    new_buchungssatz = Buchungssatz(wert=buchungssatz_wert, anmerkung=buchungssatz_anmerkung,
+                                                    soll_id=buchungssatz_soll, haben_id=buchungssatz_haben,
+                                                    user_id=current_user.id)
                     db.session.add(new_buchungssatz)
                     db.session.commit()
                     print(buchungssatz)
-                    flash('Buchungssatz wurde hinzugefügt', category='success')    
+                    flash('Buchungssatz wurde hinzugefügt', category='success')
 
     return render_template('buchungssatz.html', user=current_user)
+
 
 @views.route('/bestandskonten/', methods=['GET', 'POST'])
 @login_required
@@ -125,3 +133,17 @@ def eroeffnungsbilanz():
     if request.method == 'GET':
         pass
     return render_template('eroeffnungsbilanz.html', user=current_user)
+
+
+@views.route('/guv/', methods=['GET'])
+@login_required
+def guv():
+    summe_aufwendungen = 0
+    summe_ertraege = 0
+    if request.method == 'GET':
+        for bilanz in current_user.bilanzen:
+            if bilanz.kontoart == 'aufwand':
+                summe_aufwendungen += bilanz.abschlussbestand
+            elif bilanz.kontoart == 'ertrag':
+                summe_ertraege += bilanz.abschlussbestand
+        return render_template('guv.html', user=current_user, summe_aufwendungen=summe_aufwendungen, summe_ertraege=summe_ertraege)

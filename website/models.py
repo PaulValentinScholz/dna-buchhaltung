@@ -4,8 +4,8 @@ from flask_login import UserMixin
 class Bilanz(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(512), nullable=False)
-    anfangsbestand = db.Column(db.Float)
-    abschlussbestand = db.Column(db.Float)
+    anfangsbestand = db.Column(db.Float, default=0)
+    abschlussbestand = db.Column(db.Float, default=0)
     kontoart = db.Column(db.String(128))
     kontotyp = db.Column(db.String(128))
     abgeschlossen = db.Column(db.Boolean, default=False)

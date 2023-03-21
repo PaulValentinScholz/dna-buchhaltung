@@ -16,14 +16,12 @@
 {% if bilanz.kontoart == 'aktiv' or bilanz.kontoart == 'passiv' %}
 {% set summe_soll = 0 %}
 {% set summe_haben = 0 %}
-<table class="table table-dark table-striped table-hover table-bordered table-sm" id="{{bilanz.name}}" name="{{bilanz.name}}">
+<table class="table table-dark table-striped table-hover table-sm" id="{{bilanz.name}}" name="{{bilanz.name}}">
     <thead>
         <tr align="center">
-            <th scope="col" style="width: 20%">Soll</th>
-            <th scope="col" style="width: 20%"></th>
-            <th scope="col" style="width: 20%">{{ bilanz.name }}</th>
-            <th scope="col" style="width: 20%"></th>
-            <th scope="col" style="width: 20%">Haben</th>
+            <th scope="col" colspan="2" style="width: 45%">Soll</th>
+            <th scope="col" style="width: 10%">{{ bilanz.name }}</th>
+            <th scope="col" colspan="2" style="width: 45%">Haben</th>
         </tr>
     </thead>
     <tbody>

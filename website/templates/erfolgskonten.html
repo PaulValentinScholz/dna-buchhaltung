@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1 align="center" style="color: white">Erfolgskonten</h1>
+<h1 align="center">Erfolgskonten</h1>
 </br>
 <form method="POST">
     <div align="center" >
@@ -15,12 +15,12 @@
 {% if bilanz.kontoart == 'ertrag' or bilanz.kontoart == 'aufwand' %}
 {% set summe_soll = 0 %}
 {% set summe_haben = 0 %}
-<table class="table table-dark table-striped table-hover table-sm" id="{{bilanz.name}}" name="{{bilanz.name}}">
+<table class="table table-light table-hover table-sm" id="{{bilanz.name}}" name="{{bilanz.name}}">
     <thead>
         <tr align="center">
-            <th scope="col" colspan="2" style="width: 45%">Soll</th>
-            <th scope="col" style="width: 10%">{{ bilanz.name }}</th>
-            <th scope="col" colspan="2" style="width: 45%">Haben</th>
+            <th class="table-active" scope="col" colspan="2" style="width: 45%">Soll</th>
+            <th class="table-active" scope="col" style="width: 10%">{{ bilanz.name }}</th>
+            <th class="table-active" scope="col" colspan="2" style="width: 45%">Haben</th>
         </tr>
     </thead>
     <tbody>
@@ -51,47 +51,47 @@
         {% if summen.index(summe) == user.bilanzen.index(bilanz)%}
         {% if bilanz.kontoart == 'aufwand' %}
         <tr align="center">
-            <td class="w-20"></td>
-            <td class="w-20"></td>
-            <td class="w-20"></td>
-            <td class="w-20"></td>
-            <td class="w-20" style="color: #ffc107">{{summe[1]|int}}</td>
+            <td class="w-20 table-active"></td>
+            <td class="w-20 table-active"></td>
+            <td class="w-20 table-active"></td>
+            <td class="w-20 table-active"></td>
+            <td class="w-20 table-active" style="color: #F1C40F">{{summe[1]|int}}</td>
         </tr>
         <tr align="center">
-            <td class="w-20"></td>
-            <td class="w-20"></td>
-            <td class="w-20"></td>
-            <td class="w-20" style="color: #EF9A9A">Saldo</td>
-            <td class="w-20" style="color: #EF9A9A">{{bilanz.abschlussbestand|int}}</td>
+            <td class="w-20 table-active"></td>
+            <td class="w-20 table-active"></td>
+            <td class="w-20 table-active"></td>
+            <td class="w-20 table-active" style="color: #E74C3C">Saldo</td>
+            <td class="w-20 table-active" style="color: #E74C3C">{{bilanz.abschlussbestand|int}}</td>
         </tr>
         <tr align="center">
-            <td class="w-20"></td>
-            <td class="w-20" style="color: #ffc107">{{summe[0]|int}}</td>
-            <td class="w-20"></td>
-            <td class="w-20"></td>
-            <td class="w-20" style="color: #ffc107">{{summe[0]|int}}</td>
+            <td class="w-20 table-active"></td>
+            <td class="w-20 table-active" style="color: #F1C40F">{{summe[0]|int}}</td>
+            <td class="w-20 table-active"></td>
+            <td class="w-20 table-active"></td>
+            <td class="w-20 table-active" style="color: #F1C40F">{{summe[0]|int}}</td>
         </tr>
         {% elif bilanz.kontoart == 'ertrag' %}
         <tr align="center">
-            <td class="w-20"></td>
-            <td class="w-20" style="color: #ffc107">{{summe[0]|int}}</td>
-            <td class="w-20"></td>
-            <td class="w-20"></td>
-            <td class="w-20"></td>
+            <td class="w-20 table-active"></td>
+            <td class="w-20 table-active" style="color: #F1C40F">{{summe[0]|int}}</td>
+            <td class="w-20 table-active"></td>
+            <td class="w-20 table-active"></td>
+            <td class="w-20 table-active"></td>
         </tr>
         <tr align="center">
-            <td class="w-20" style="color: #EF9A9A">Saldo</td>
-            <td class="w-20" style="color: #EF9A9A">{{bilanz.abschlussbestand|int}}</td>
-            <td class="w-20"></td>
-            <td class="w-20"></td>
-            <td class="w-20"></td>
+            <td class="w-20 table-active" style="color: #E74C3C">Saldo</td>
+            <td class="w-20 table-active" style="color: #E74C3C">{{bilanz.abschlussbestand|int}}</td>
+            <td class="w-20 table-active"></td>
+            <td class="w-20 table-active"></td>
+            <td class="w-20 table-active"></td>
         </tr>
         <tr align="center">
-            <td class="w-20"></td>
-            <td class="w-20" style="color: #ffc107">{{summe[1]|int}}</td>
-            <td class="w-20"></td>
-            <td class="w-20"></td>
-            <td class="w-20" style="color: #ffc107">{{summe[1]|int}}</td>
+            <td class="w-20 table-active"></td>
+            <td class="w-20 table-active" style="color: #F1C40F">{{summe[1]|int}}</td>
+            <td class="w-20 table-active"></td>
+            <td class="w-20 table-active"></td>
+            <td class="w-20 table-active" style="color: #F1C40F">{{summe[1]|int}}</td>
         </tr>
         {% endif %}
         {% endif %}

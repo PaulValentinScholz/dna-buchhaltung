@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1 align="center" style="color: white">Buchungssatz</h1>
+<h1 align="center">Buchungssatz</h1>
 </br>
 <div align="center" >
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#buchungssatzForm">
@@ -10,14 +10,14 @@
 </div>
 </br>
 <ul class="list-group list-group-flush" id="bilanzen">
-    <table class="table table-dark table-striped table-hover table-bordered table-sm" name="buchungsseatze">
+    <table class="table table-light table-hover table-bordered table-sm" name="buchungsseatze">
         <thead>
             <tr align="center">
-                <th scope="col">Buchungsnummer</th>
-                <th scope="col">Soll</th>
-                <th scope="col">Haben</th>
-                <th scope="col">Wert</th>
-                <th scope="col">Anmerkung</th>
+                <th class="table-active" scope="col">Buchungsnummer</th>
+                <th class="table-active" scope="col">Soll</th>
+                <th class="table-active" scope="col">Haben</th>
+                <th class="table-active" scope="col">Wert</th>
+                <th class="table-active" scope="col">Anmerkung</th>
             </tr>
         </thead>
         <tbody>

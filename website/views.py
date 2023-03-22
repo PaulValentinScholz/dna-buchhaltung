@@ -152,38 +152,53 @@ def guv():
     if request.method == 'GET':
         summe_aufwendungen = 0
         summe_ertraege = 0
-        for bilanz in current_user.bilanzen:
-            if bilanz.kontoart == 'aufwand':
-                summe_aufwendungen += bilanz.abschlussbestand
-            elif bilanz.kontoart == 'ertrag':
-                summe_ertraege += bilanz.abschlussbestand
-            if bilanz.name == 'Eigenkapital':
-                ek = bilanz
-            if bilanz.kontoart == 'guv':
-                guv = bilanz
-                for buchungssatz in current_user.buchungssaetze:
-                    if bilanz.id == buchungssatz.soll_id:
-                        bilanz.abschlussbestand -= buchungssatz.wert
-                    elif bilanz.id == buchungssatz.haben_id:
-                        bilanz.abschlussbestand += buchungssatz.wert
-
-        if bilanz.abschlussbestand < 0:
-            print("Eigenkapital an GuV")
-            guv_ek = Buchungssatz(wert=summe_aufwendungen-summe_ertraege, soll_id=ek.id, haben_id=guv.id,
-                                     anmerkung='GuV an Eigenkapital', user_id=current_user.id)
-            db.session.add(guv_ek)
-            db.session.commit()
-        elif bilanz.abschlussbestand > 0:
-            print("GuV an Eigenkapital")
-            guv_ek = Buchungssatz(wert=summe_aufwendungen-summe_ertraege, soll_id=guv.id, haben_id=ek.id,
-                                     anmerkung='Eigenkapital an GuV', user_id=current_user.id)
-            db.session.add(guv_ek)
-            db.session.commit()
-        else:
-            print(summe_aufwendungen, summe_ertraege)
-
-        guv.abschlussbestand = summe_aufwendungen-summe_ertraege
-        db.session.commit()
+        for guv_bil in current_user.bilanzen:
+            if guv_bil.kontoart == 'guv':
+                guv = guv_bil
+                for ek_bil in current_user.bilanzen:
+                    if ek_bil.name == 'Eigenkapital':
+                        ek = ek_bil
+                if guv.abschlussbestand == None:
+                    for bilanz in current_user.bilanzen:
+                        if bilanz.kontoart == 'aufwand':
+                            summe_aufwendungen += bilanz.abschlussbestand
+                        elif bilanz.kontoart == 'ertrag':
+                            summe_ertraege += bilanz.abschlussbestand
+                    print(guv.name)
+                    print(ek.name)
+                    print(guv.abschlussbestand)
+                    guv.abschlussbestand = summe_aufwendungen - summe_ertraege
+                    db.session.commit()
+                else:
+                    for bilanz in current_user.bilanzen:
+                        if bilanz.kontoart == 'aufwand':
+                            summe_aufwendungen += bilanz.abschlussbestand
+                        elif bilanz.kontoart == 'ertrag':
+                            summe_ertraege += bilanz.abschlussbestand
+                    print(guv.name)
+                    print(ek.name)
+                    print(guv.abschlussbestand)
+                    if guv.abschlussbestand < 0:
+                        ek_an_guv = Buchungssatz(wert=abs(guv.abschlussbestand), soll_id=ek.id, haben_id=guv.id,
+                                                    anmerkung="Eigenkapital an GuV", user_id=current_user.id)
+                        db.session.add(ek_an_guv)
+                        db.session.commit()
+                        guv.abschlussbestand += ek_an_guv.wert
+                        db.session.commit()
+                        print("ek an guv ", abs(guv.abschlussbestand))
+                    elif guv.abschlussbestand > 0:
+                        guv_an_ek = Buchungssatz(wert=abs(guv.abschlussbestand), soll_id=guv.id, haben_id=ek.id,
+                                                    anmerkung="GuV an Eigenkapital", user_id=current_user.id)
+                        db.session.add(guv_an_ek)
+                        db.session.commit()
+                        guv.abschlussbestand -= guv_an_ek.wert
+                        db.session.commit()
+                    elif guv.abschlussbestand == 0.0:
+                        for buchung in current_user.buchungssaetze:
+                            if buchung.soll_id == guv.id and buchung.haben_id == ek.id:
+                                summe_ertraege += buchung.wert
+                            elif buchung.soll_id == ek.id and buchung.haben_id == guv.id:
+                                summe_aufwendungen += buchung.wert
         return render_template('guv.html', user=current_user, summe_aufwendungen=summe_aufwendungen,
                                summe_ertraege=summe_ertraege)
 
@@ -207,7 +222,7 @@ def abschliessen():
     for bilanz in current_user.bilanzen:
         summe_soll = 0
         summe_haben = 0
-        bilanz.abgeschlossen = True
+        bilanz.abgeschlossen = True if bilanz.kontoart != 'guv' else bilanz.abgeschlossen == False
         for buchungssatz in current_user.buchungssaetze:
             if bilanz.id == buchungssatz.soll_id:
                 summe_soll += buchungssatz.wert

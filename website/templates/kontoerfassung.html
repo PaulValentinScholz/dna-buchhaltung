@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1 align="center" style="color: white">Übersicht Konten & Kontenerfassung</h1>
+<h1 align="center">Übersicht Konten & Kontenerfassung</h1>
 </br>
 <div align="center" >
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#buchungssatzForm">
@@ -9,14 +9,14 @@
     </button>
 </div>
 </br>
-<table class="table table-dark table-striped table-hover table-sm" name="bestandskonten">
+<table class="table table-light table-hover table-sm" name="bestandskonten">
     <thead>
         <tr align="center">
-            <th scope="col">ID</th>
-            <th scope="col">Name</th>
-            <th scope="col">Anfangsbestand</th>
-            <th scope="col">Abschlussbestand</th>
-            <th scope="col">Kontoart</th>
+            <th class="table-active" scope="col">ID</th>
+            <th class="table-active" scope="col">Name</th>
+            <th class="table-active" scope="col">Anfangsbestand</th>
+            <th class="table-active" scope="col">Abschlussbestand</th>
+            <th class="table-active" scope="col">Kontoart</th>
         </tr>
     </thead>
     <tbody>

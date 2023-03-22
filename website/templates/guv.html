@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1 align="center" style="color: white">GuV Abschlussrechnung</h1>
+<h1 align="center">GuV</h1>
 </br>
-<table class="table table-dark table-striped table-hover table-sm" id="guv_table" name="guv_table">
+<table class="table table-light table-hover table-sm" id="guv_table" name="guv_table">
     <thead>
         <tr align="center">
-            <th scope="col" colspan="2" style="width: 45%">Aufwendungen</th>
-            <th scope="col" style="width: 10%"></th>
-            <th scope="col" colspan="2" style="width: 45%">Erträge</th>
+            <th class="table-active" scope="col" colspan="2" style="width: 45%">Aufwendungen</th>
+            <th class="table-active" scope="col" style="width: 10%"></th>
+            <th class="table-active" scope="col" colspan="2" style="width: 45%">Erträge</th>
         </tr>
     </thead>
     
@@ -43,26 +43,74 @@
         {% endfor %}
     </tbody>
     <tfoot>
+        {% for konto in user.bilanzen %}
+        {% if konto.kontoart == 'guv' %}
+        {% for buchungssatz in user.buchungssaetze %}
+        {% if buchungssatz.soll_id == konto.id%}
+        {% for bil in user.bilanzen %}
+        {% if bil.name == 'Eigenkapital' %}
+        {% if buchungssatz.haben_id == bil.id%}
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="w-20">
+                {{bil.name}}
+            </td>
+            <td class="w-20">
+                {{buchungssatz.wert}}
+            </td>
+        </tr>
+        {% endif %}
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+        {% endfor %}
+        {% for buchungssatz in user.buchungssaetze %}
+        {% if buchungssatz.haben_id == konto.id%}
+        {% for bil in user.bilanzen %}
+        {% if bil.name == 'Eigenkapital' %}
+        {% if buchungssatz.soll_id == bil.id%}
+        <tr>
+            <td class="w-20">
+                {{bil.name}}
+            </td>
+            <td class="w-20">
+                {{buchungssatz.wert}}
+            </td>
+            <td></td>
+            <td>
+            </td>
+            <td>
+            </td>
+        </tr>
+        {% endif %}
+        {% endif %}
+        {% endfor%}
+        {% endif %}
+        {% endfor%}
+        {% endif %}
+        {% endfor %}
         {% for guv in user.bilanzen %}
         {% if guv.kontoart == 'guv' %}
         <tr>
-            <td class="w-20" style="color: #A5D6A7">
+            <td class="w-20 table-active" style="color: #2ECC71">
                 Saldo (Gewinn)
             </td>
-            <td class="w-20" style="color: #A5D6A7">
+            <td class="w-20 table-active" style="color: #2ECC71">
                 {{ summe_aufwendungen|int }}
             </td>
-            {% if summe_aufwendungen == summe_ertraege %}
-            <td class="w-20" style="color: #f5f50a">{{guv.abschlussbestand|int}}</td>
-            {% elif summe_aufwendungen > summe_ertraege %}
-            <td class="w-20" style="color: #A5D6A7">{{guv.abschlussbestand|int}}</td>
-            {% else %}
-            <td class="w-20" style="color: #EF9A9A">{{guv.abschlussbestand|int}}</td>
+            {% if guv.abschlussbestand < 0.0 %}
+            <td class="w-20 table-active" style="color: #E74C3C">{{guv.abschlussbestand|int}}</td>
+            {% elif guv.abschlussbestand > 0.0 %}
+            <td class="w-20 table-active" style="color: #2ECC71">{{guv.abschlussbestand|int}}</td>
+            {% elif guv.abschlussbestand == 0.0 %}
+            <td class="w-20 table-active" style="color: #F1C40F">{{guv.abschlussbestand|int}}</td>
             {% endif %}
-            <td class="w-20" style="color: #EF9A9A">
+            <td class="w-20 table-active" style="color: #E74C3C">
                 Saldo (Verlust)
             </td>
-            <td class="w-20" style="color: #EF9A9A">
+            <td class="w-20 table-active" style="color: #E74C3C">
                 {{ summe_ertraege|int }}
             </td>
         </tr>

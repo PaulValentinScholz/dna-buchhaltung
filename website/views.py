@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, flash
 from flask_login import login_required, current_user
-from .models import Bilanz, Buchungssatz
+from .models import Bilanz, Buchungssatz, User
 from . import db
 
 views = Blueprint('views', __name__)
@@ -10,11 +10,6 @@ views = Blueprint('views', __name__)
 def home():
     return render_template("home.html", user=current_user)
 
-
-@views.route('/bilanzuebersicht/', methods=['GET', 'POST'])
-@login_required
-def bilanzuebersicht():
-    return render_template("bilanz.html", user=current_user)
 
 
 @views.route('/kontoerfassung/', methods=['GET', 'POST'])
@@ -33,7 +28,7 @@ def kontoerfassung():
                 if bilanz_name.__contains__(sign) or len(bilanz_name) == 0:
                     flash('Bitte keine Satzzeichen in Name eingeben oder leer lassen.', category='error')
                 else:
-                    break
+                    continue
             if bilanz_kontoart == 'ertrag' or bilanz_kontoart == 'aufwand' or bilanz_anfangsbestand == '':
                 bilanz_anfangsbestand = 0
             new_bilanz = Bilanz(name=bilanz_name, anfangsbestand=bilanz_anfangsbestand, kontoart=bilanz_kontoart,
@@ -79,11 +74,11 @@ def buchungssatz():
 @login_required
 def bestandskonten():
     if request.method == 'POST':
+        abschliessen()
         summen = []
         for bilanz in current_user.bilanzen:
             summe_soll = 0
             summe_haben = 0
-            bilanz.abgeschlossen = True
             for buchungssatz in current_user.buchungssaetze:
                 if bilanz.id == buchungssatz.soll_id:
                     summe_soll += buchungssatz.wert
@@ -91,25 +86,37 @@ def bestandskonten():
                     summe_haben += buchungssatz.wert
             if bilanz.kontoart == 'aktiv':
                 summe_soll += bilanz.anfangsbestand
-                bilanz.abschlussbestand = summe_soll - summe_haben
             elif bilanz.kontoart == 'passiv':
                 summe_haben += bilanz.anfangsbestand
-                bilanz.abschlussbestand = summe_haben - summe_soll
             summen.append([summe_soll, summe_haben])
-            db.session.commit()
         return render_template('bestandskonten.html', user=current_user, summen=summen)
-    return render_template('bestandskonten.html', user=current_user)
+    else:
+        summen = []
+        for bilanz in current_user.bilanzen:
+            summe_soll = 0
+            summe_haben = 0
+            for buchungssatz in current_user.buchungssaetze:
+                if bilanz.id == buchungssatz.soll_id:
+                    summe_soll += buchungssatz.wert
+                elif bilanz.id == buchungssatz.haben_id:
+                    summe_haben += buchungssatz.wert
+            if bilanz.kontoart == 'aktiv':
+                summe_soll += bilanz.anfangsbestand
+            elif bilanz.kontoart == 'passiv':
+                summe_haben += bilanz.anfangsbestand
+            summen.append([summe_soll, summe_haben])
+        return render_template('bestandskonten.html', user=current_user, summen=summen)
 
 
 @views.route('/erfolgskonten/', methods=['GET', 'POST'])
 @login_required
 def erfolgskonten():
     if request.method == 'POST':
+        abschliessen()
         summen = []
         for bilanz in current_user.bilanzen:
             summe_soll = 0
             summe_haben = 0
-            bilanz.abgeschlossen = True
             for buchungssatz in current_user.buchungssaetze:
                 if bilanz.id == buchungssatz.soll_id:
                     summe_soll += buchungssatz.wert
@@ -117,33 +124,105 @@ def erfolgskonten():
                     summe_haben += buchungssatz.wert
             if bilanz.kontoart == 'aufwand':
                 summe_soll += bilanz.anfangsbestand
-                bilanz.abschlussbestand = summe_soll - summe_haben
             elif bilanz.kontoart == 'ertrag':
                 summe_haben += bilanz.anfangsbestand
-                bilanz.abschlussbestand = summe_haben - summe_soll
             summen.append([summe_soll, summe_haben])
-            db.session.commit()
         return render_template('erfolgskonten.html', user=current_user, summen=summen)
-    return render_template('erfolgskonten.html', user=current_user)
-
-
-@views.route('/eroeffnungsbilanz/', methods=['GET', 'POST'])
-@login_required
-def eroeffnungsbilanz():
-    if request.method == 'GET':
-        pass
-    return render_template('eroeffnungsbilanz.html', user=current_user)
+    else:
+        summen = []
+        for bilanz in current_user.bilanzen:
+            summe_soll = 0
+            summe_haben = 0
+            for buchungssatz in current_user.buchungssaetze:
+                if bilanz.id == buchungssatz.soll_id:
+                    summe_soll += buchungssatz.wert
+                elif bilanz.id == buchungssatz.haben_id:
+                    summe_haben += buchungssatz.wert
+            if bilanz.kontoart == 'aufwand':
+                summe_soll += bilanz.anfangsbestand
+            elif bilanz.kontoart == 'ertrag':
+                summe_haben += bilanz.anfangsbestand
+            summen.append([summe_soll, summe_haben])
+        return render_template('erfolgskonten.html', user=current_user, summen=summen)
 
 
 @views.route('/guv/', methods=['GET'])
 @login_required
 def guv():
-    summe_aufwendungen = 0
-    summe_ertraege = 0
     if request.method == 'GET':
+        summe_aufwendungen = 0
+        summe_ertraege = 0
         for bilanz in current_user.bilanzen:
             if bilanz.kontoart == 'aufwand':
                 summe_aufwendungen += bilanz.abschlussbestand
             elif bilanz.kontoart == 'ertrag':
                 summe_ertraege += bilanz.abschlussbestand
-        return render_template('guv.html', user=current_user, summe_aufwendungen=summe_aufwendungen, summe_ertraege=summe_ertraege)
+            if bilanz.name == 'Eigenkapital':
+                ek = bilanz
+            if bilanz.kontoart == 'guv':
+                guv = bilanz
+                for buchungssatz in current_user.buchungssaetze:
+                    if bilanz.id == buchungssatz.soll_id:
+                        bilanz.abschlussbestand -= buchungssatz.wert
+                    elif bilanz.id == buchungssatz.haben_id:
+                        bilanz.abschlussbestand += buchungssatz.wert
+
+        if bilanz.abschlussbestand < 0:
+            print("Eigenkapital an GuV")
+            guv_ek = Buchungssatz(wert=summe_aufwendungen-summe_ertraege, soll_id=ek.id, haben_id=guv.id,
+                                     anmerkung='GuV an Eigenkapital', user_id=current_user.id)
+            db.session.add(guv_ek)
+            db.session.commit()
+        elif bilanz.abschlussbestand > 0:
+            print("GuV an Eigenkapital")
+            guv_ek = Buchungssatz(wert=summe_aufwendungen-summe_ertraege, soll_id=guv.id, haben_id=ek.id,
+                                     anmerkung='Eigenkapital an GuV', user_id=current_user.id)
+            db.session.add(guv_ek)
+            db.session.commit()
+        else:
+            print(summe_aufwendungen, summe_ertraege)
+
+        guv.abschlussbestand = summe_aufwendungen-summe_ertraege
+        db.session.commit()
+        return render_template('guv.html', user=current_user, summe_aufwendungen=summe_aufwendungen,
+                               summe_ertraege=summe_ertraege)
+
+
+@views.route('/schlussbilanz/', methods=['GET'])
+@login_required
+def schlussbilanz():
+    summe_aufwendungen = 0
+    summe_ertraege = 0
+    if request.method == 'GET':
+        for bilanz in current_user.bilanzen:
+            if bilanz.kontoart == 'aktiv':
+                summe_aufwendungen += bilanz.abschlussbestand
+            elif bilanz.kontoart == 'passiv':
+                summe_ertraege += bilanz.abschlussbestand
+        return render_template("schlusbilanz.html", user=current_user, summe_aufwendungen=summe_aufwendungen,
+                               summe_ertraege=summe_ertraege)
+
+
+def abschliessen():
+    for bilanz in current_user.bilanzen:
+        summe_soll = 0
+        summe_haben = 0
+        bilanz.abgeschlossen = True
+        for buchungssatz in current_user.buchungssaetze:
+            if bilanz.id == buchungssatz.soll_id:
+                summe_soll += buchungssatz.wert
+            elif bilanz.id == buchungssatz.haben_id:
+                summe_haben += buchungssatz.wert
+        if bilanz.kontoart == 'aktiv':
+            summe_soll += bilanz.anfangsbestand
+            bilanz.abschlussbestand = summe_soll - summe_haben
+        elif bilanz.kontoart == 'passiv':
+            summe_haben += bilanz.anfangsbestand
+            bilanz.abschlussbestand = summe_haben - summe_soll
+        elif bilanz.kontoart == 'aufwand':
+            summe_soll += bilanz.anfangsbestand
+            bilanz.abschlussbestand = summe_soll - summe_haben
+        elif bilanz.kontoart == 'ertrag':
+            summe_haben += bilanz.anfangsbestand
+            bilanz.abschlussbestand = summe_haben - summe_soll
+        db.session.commit()

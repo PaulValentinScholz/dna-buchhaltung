@@ -29,7 +29,7 @@
                                 <td><a href="/bestandskonten/#{{buchungssatz.id}}">{{ buchungssatz.id }}</a></td>
                                 <td><a href="/bestandskonten/#{{soll_bilanz.name}}">{{ soll_bilanz.name }}</a></td>
                                 <td><a href="/bestandskonten/#{{haben_bilanz.name}}">{{ haben_bilanz.name }}</a></td>
-                                <td>{{ buchungssatz.wert }}</td>
+                                <td>{{ buchungssatz.wert|int }}</td>
                                 <td>{{ buchungssatz.anmerkung }}</td>
                             </tr>
                         {% endif %}

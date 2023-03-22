@@ -26,9 +26,6 @@
             <div class="navbar-nav">
               {% if user.is_authenticated %}
               <li class="nav-item">
-              <a class="nav-link" id="bilanz" href="/bilanzuebersicht">Bilanzübersicht</a>
-              </li>
-              <li class="nav-item">
               <a class="nav-link" id="buchungssatz" href="/buchungssatz">Buchungssatz</a>
               </li>
               
@@ -41,7 +38,6 @@
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="/bestandskonten/">Bestandskonten</a></li>
                         <li><a class="dropdown-item" href="/erfolgskonten/">Erfolgskonten</a></li>
-                        <li><a class="dropdown-item" href="/eroeffnungsbilanz/">Eröffnungsbilanz</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="/guv/">GuV Abschlussrechnung</a></li>
                     </ul>

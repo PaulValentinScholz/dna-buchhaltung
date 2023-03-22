@@ -1,13 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1 align="center" style="color: white">Bestandskonten</h1>
+<h1 align="center" style="color: white">Erfolgskonten</h1>
 </br>
 <form method="POST">
     <div align="center" >
         <button type="submit" class="btn btn-primary">Bilanzabschlussrechnung</button>
     </div>
-
 </form>
 
 </br>
@@ -25,7 +24,6 @@
         </tr>
     </thead>
     <tbody>
-
         {% for buchungssatz in user.buchungssaetze %}
         {% if buchungssatz.soll_id == bilanz.id %}
         <tr align="center">
@@ -57,43 +55,43 @@
             <td class="w-20"></td>
             <td class="w-20"></td>
             <td class="w-20"></td>
-            <td class="w-20" style="color: #ffc107">{{summe[1]}}</td>
+            <td class="w-20" style="color: #ffc107">{{summe[1]|int}}</td>
         </tr>
         <tr align="center">
             <td class="w-20"></td>
             <td class="w-20"></td>
             <td class="w-20"></td>
             <td class="w-20" style="color: #EF9A9A">Saldo</td>
-            <td class="w-20" style="color: #EF9A9A">{{bilanz.abschlussbestand}}</td>
+            <td class="w-20" style="color: #EF9A9A">{{bilanz.abschlussbestand|int}}</td>
         </tr>
         <tr align="center">
             <td class="w-20"></td>
-            <td class="w-20" style="color: #ffc107">{{summe[0]}}</td>
+            <td class="w-20" style="color: #ffc107">{{summe[0]|int}}</td>
             <td class="w-20"></td>
             <td class="w-20"></td>
-            <td class="w-20" style="color: #ffc107">{{summe[0]}}</td>
+            <td class="w-20" style="color: #ffc107">{{summe[0]|int}}</td>
         </tr>
         {% elif bilanz.kontoart == 'ertrag' %}
         <tr align="center">
             <td class="w-20"></td>
-            <td class="w-20" style="color: #ffc107">{{summe[0]}}</td>
+            <td class="w-20" style="color: #ffc107">{{summe[0]|int}}</td>
             <td class="w-20"></td>
             <td class="w-20"></td>
             <td class="w-20"></td>
         </tr>
         <tr align="center">
             <td class="w-20" style="color: #EF9A9A">Saldo</td>
-            <td class="w-20" style="color: #EF9A9A">{{bilanz.abschlussbestand}}</td>
+            <td class="w-20" style="color: #EF9A9A">{{bilanz.abschlussbestand|int}}</td>
             <td class="w-20"></td>
             <td class="w-20"></td>
             <td class="w-20"></td>
         </tr>
         <tr align="center">
             <td class="w-20"></td>
-            <td class="w-20" style="color: #ffc107">{{summe[1]}}</td>
+            <td class="w-20" style="color: #ffc107">{{summe[1]|int}}</td>
             <td class="w-20"></td>
             <td class="w-20"></td>
-            <td class="w-20" style="color: #ffc107">{{summe[1]}}</td>
+            <td class="w-20" style="color: #ffc107">{{summe[1]|int}}</td>
         </tr>
         {% endif %}
         {% endif %}

@@ -21,13 +21,15 @@
     </thead>
     <tbody>
         {% for bilanz in user.bilanzen %}
+        {% if bilanz.kontoart != 'guv' %}
         <tr align="center">
             <td>{{ bilanz.id }}</td>
             <td><a href="/bestandskonten/#{{bilanz.name}}">{{ bilanz.name }}</a></td>
-            <td>{{ bilanz.anfangsbestand }}</td>
-            <td>{{ bilanz.abschlussbestand }}</td>
+            <td>{{ bilanz.anfangsbestand|int }}</td>
+            <td>{{ bilanz.abschlussbestand|int }}</td>
             <td>{{ bilanz.kontoart }}</td>
         </tr>
+        {% endif %}
         {% endfor %}
     </tbody>
 </table>

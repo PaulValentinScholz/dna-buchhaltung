@@ -21,7 +21,7 @@
                 {{ konto.name }}
             </td>
             <td class="w-20">
-                {{ konto.abschlussbestand }}
+                {{ konto.abschlussbestand|int }}
             </td>
             <td></td>
             <td></td>
@@ -36,28 +36,38 @@
                 {{ konto.name }}
             </td>
             <td class="w-20">
-                {{ konto.abschlussbestand }}
+                {{ konto.abschlussbestand|int }}
             </td>
-        {% endif %}
         </tr>
+        {% endif %}
         {% endfor %}
     </tbody>
     <tfoot>
+        {% for guv in user.bilanzen %}
+        {% if guv.kontoart == 'guv' %}
         <tr>
             <td class="w-20" style="color: #A5D6A7">
                 Saldo (Gewinn)
             </td>
             <td class="w-20" style="color: #A5D6A7">
-                {{ summe_aufwendungen }}
+                {{ summe_aufwendungen|int }}
             </td>
-            <td></td>
+            {% if summe_aufwendungen == summe_ertraege %}
+            <td class="w-20" style="color: #f5f50a">{{guv.abschlussbestand|int}}</td>
+            {% elif summe_aufwendungen > summe_ertraege %}
+            <td class="w-20" style="color: #A5D6A7">{{guv.abschlussbestand|int}}</td>
+            {% else %}
+            <td class="w-20" style="color: #EF9A9A">{{guv.abschlussbestand|int}}</td>
+            {% endif %}
             <td class="w-20" style="color: #EF9A9A">
                 Saldo (Verlust)
             </td>
             <td class="w-20" style="color: #EF9A9A">
-                {{ summe_ertraege }}
+                {{ summe_ertraege|int }}
             </td>
         </tr>
+        {% endif %}
+        {% endfor %}
     </tfoot>
 </table>
 {% endblock %}

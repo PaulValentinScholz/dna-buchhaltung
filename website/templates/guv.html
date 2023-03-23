@@ -21,7 +21,7 @@
                 {{ konto.name }}
             </td>
             <td class="w-20">
-                {{ konto.abschlussbestand|int }}
+                {{ konto.abschlussbestand }}
             </td>
             <td></td>
             <td></td>
@@ -36,7 +36,7 @@
                 {{ konto.name }}
             </td>
             <td class="w-20">
-                {{ konto.abschlussbestand|int }}
+                {{ konto.abschlussbestand }}
             </td>
         </tr>
         {% endif %}
@@ -98,20 +98,20 @@
                 Saldo (Gewinn)
             </td>
             <td class="w-20 table-active" style="color: #2ECC71">
-                {{ summe_aufwendungen|int }}
+                {{ summe_aufwendungen }}
             </td>
             {% if guv.abschlussbestand < 0.0 %}
-            <td class="w-20 table-active" style="color: #E74C3C">{{guv.abschlussbestand|int}}</td>
+            <td class="w-20 table-active" style="color: #E74C3C">{{guv.abschlussbestand}}</td>
             {% elif guv.abschlussbestand > 0.0 %}
-            <td class="w-20 table-active" style="color: #2ECC71">{{guv.abschlussbestand|int}}</td>
+            <td class="w-20 table-active" style="color: #2ECC71">{{guv.abschlussbestand}}</td>
             {% elif guv.abschlussbestand == 0.0 %}
-            <td class="w-20 table-active" style="color: #F1C40F">{{guv.abschlussbestand|int}}</td>
+            <td class="w-20 table-active" style="color: #F1C40F">{{guv.abschlussbestand}}</td>
             {% endif %}
             <td class="w-20 table-active" style="color: #E74C3C">
                 Saldo (Verlust)
             </td>
             <td class="w-20 table-active" style="color: #E74C3C">
-                {{ summe_ertraege|int }}
+                {{ summe_ertraege }}
             </td>
         </tr>
         {% endif %}

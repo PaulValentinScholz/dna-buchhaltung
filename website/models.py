@@ -1,6 +1,7 @@
 from . import db
 from flask_login import UserMixin
 
+
 class Bilanz(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(512), nullable=False)
@@ -19,7 +20,6 @@ class Buchungssatz(db.Model):
     soll_id = db.Column(db.Integer, db.ForeignKey('bilanz.id'), nullable=False)
     haben_id = db.Column(db.Integer, db.ForeignKey('bilanz.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-
 
 
 class User(db.Model, UserMixin):

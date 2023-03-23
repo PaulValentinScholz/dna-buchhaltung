@@ -56,10 +56,12 @@
                     <div>
                         <label for="buchungssatz_soll">Soll</label>
                         <select class="form-select form-control" name="buchungssatz_soll" id="buchungssatz_soll">
-                            {% for bilanz in user.bilanzen%}
+                            {% for bilanz in user.bilanzen %}
+                            {% if bilanz.kontoart != 'guv' %}
                             <option value={{bilanz.id}}>
                                 {{bilanz.name}}
                             </option>
+                            {% endif %}
                             {% endfor %}
                         </select>
                     </div>
@@ -68,9 +70,11 @@
                         <label for="buchungssatz_haben">Haben</label>
                         <select class="form-select form-control" name="buchungssatz_haben" id="buchungssatz_haben">
                             {% for bilanz in user.bilanzen%}
+                            {% if bilanz.kontoart != 'guv' %}
                             <option value={{bilanz.id}}>
                                 {{bilanz.name}}
                             </option>
+                            {% endif %}
                             {% endfor %}
                         </select>
                     </div>

@@ -15,7 +15,7 @@ class Bilanz(db.Model):
 
 class Buchungssatz(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    wert = db.Column(db.Integer, nullable=False)
+    wert = db.Column(db.Float, nullable=False)
     anmerkung = db.Column(db.String(256))
     soll_id = db.Column(db.Integer, db.ForeignKey('bilanz.id'), nullable=False)
     haben_id = db.Column(db.Integer, db.ForeignKey('bilanz.id'), nullable=False)
